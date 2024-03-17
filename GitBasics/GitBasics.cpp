@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <regex>
+#include<locale>
 
 using namespace std;
 
@@ -35,25 +36,28 @@ string MarkdowntoHTML(const string& markdown) {
 }
 
 string ReadFile(const string& filePath) {
-	ifstream file(filePath);
+	wifstream file(filePath);
 	if (!file.is_open()) {
 		cerr << " Sorry, the file cannot be opened :( " << filePath << endl;
 		exit(EXIT_FAILURE);
 	}
-	stringstream buffer;
+	file.imbue(locale(file.getloc(), new codecvt_utf8<wchar_t>));
+
+	wstringstream buffer;
 	buffer << file.rdbuf();
 	return buffer.str();
 }
 
 void WriteFile(const string& text, const string& filePath) {
-	ofstream file(filePath);
+	wofstream file(filePath);
 	if (!file.is_open()) {
-		cerr << " Sorry, the file cannot be opened for reading " << filePath <<  endl;
+		cerr << " Sorry, the file cannot be opened for reading " << filePath << endl;
 		exit(EXIT_FAILURE);
 	}
+	file.imbue(locale(locale(), new codecvt_utf8<wchar_t>));
 
 	file << text;
-	cout<< "The HTML format text was written to " << filePath <<endl;
+	cout << "The HTML format text was written to " << filePath << endl;
 }
 
 int main(int args, char* argv[])
