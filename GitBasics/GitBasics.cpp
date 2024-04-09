@@ -103,10 +103,18 @@ int main(int args, char* argv[])
 	}
 	string Markdown = ReadFile(inputFilePath);
 	string FormattedText;
-	if (format == "ansi" || format.empty()){
+	if (format.empty()) {
+		if (!outputFilePath.empty()) {
+			FormattedText = MarkdowntoHTML(Markdown);
+		}
+		else {
+			FormattedText = AnsiFormat(Markdown);
+		}
+	}
+	else if (format == "ansi") {
 		FormattedText = AnsiFormat(Markdown);
 	}
-	else if (format == "html" || !outputFilePath.empty()) {
+	else if (format == "html") {
 		FormattedText = MarkdowntoHTML(Markdown);
 	}
 	else {
