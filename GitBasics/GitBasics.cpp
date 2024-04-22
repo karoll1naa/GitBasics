@@ -4,57 +4,10 @@
 #include <string>
 #include <vector>
 #include <regex>
+#include "Html.h"
+#include "Ansi.h"
 
 using namespace std;
-
-string MarkdowntoHTML(const string& markdown) {
-	stringstream HTMLstream;
-	stringstream MarkdownStream(markdown);
-	string line;
-	while (getline(MarkdownStream, line)) {
-		regex boldRegex("\\*\\*(.*?)\\*\\*");
-		line = regex_replace(line, boldRegex, "<b>$1</b>");
-
-		regex italicRegex("\\_(.*?)\\_");
-		line = regex_replace(line, italicRegex, "<i>$1</i>");
-
-		regex codeBlockRegex("```([^`]+)```");
-		line = regex_replace(line, codeBlockRegex, "<pre>$1</pre>");
-
-		regex codeRegex("`([^`]+)`");
-		line = regex_replace(line, codeRegex, "<tt>$1</tt>");
-
-		if (line.find("<") == string::npos && line.find(">") == string::npos) {
-			HTMLstream << "<p>" << line << "</p>";
-		}
-		else {
-			HTMLstream << line;
-		}
-	}
-	return HTMLstream.str();
-}
-
-string AnsiFormat(const string& markdown) {
-	stringstream ANSIstream;
-	stringstream MarkdownStream(markdown);
-	string line;
-	while (getline(MarkdownStream, line)) {
-		regex boldRegex("\\*\\*(.*?)\\*\\*");
-		line = regex_replace(line, boldRegex, "\033[1m$1\033[0m");
-
-		regex italicRegex("\\_(.*?)\\_");
-		line = regex_replace(line, italicRegex, "\033[3m$1\033[0m");
-
-		regex codeBlockRegex("```([^`]+)```");
-		line = regex_replace(line, codeBlockRegex, "\033[47;30m$1\033[0m"); //Білий текст на чорному фоні
-
-		regex codeRegex("`([^`]+)`");
-		line = regex_replace(line, codeRegex, "\033[1;37;40m$1\033[0m"); //Жирний білий текст на чорному фоні
-
-		ANSIstream << line;
-	}
-	return ANSIstream.str();
-}
 
 string ReadFile(const string& filePath) {
 	ifstream file(filePath);
